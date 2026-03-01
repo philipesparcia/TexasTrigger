@@ -11,46 +11,34 @@
             --dark-bg: #050505;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        /* --- GLOBAL RESET --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
 
         body {
             background-color: var(--dark-bg);
             color: #fff;
             font-family: 'Rajdhani', sans-serif;
-            /* Changed to allow scrolling for the new nav effect */
             overflow-x: hidden;
-            min-height: 200vh; 
         }
 
         /* --- VIDEO BACKGROUND --- */
         .video-container {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -2;
-            overflow: hidden;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -2; overflow: hidden;
         }
 
         .video-container video {
-            min-width: 100%;
-            min-height: 100%;
-            width: auto;
-            height: auto;
-            position: absolute;
-            top: 50%;
-            left: 50%;
+            min-width: 100%; min-height: 100%;
+            width: auto; height: auto;
+            position: absolute; top: 50%; left: 50%;
             transform: translate(-50%, -50%);
             object-fit: cover;
         }
 
         .video-overlay {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0; width: 100%; height: 100%;
             background: radial-gradient(circle at center, rgba(0,0,0,0.45) 0%, rgba(5,5,5,0.9) 100%);
             z-index: -1;
         }
@@ -62,138 +50,159 @@
             top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.3) 50%);
             background-size: 100% 4px;
-            pointer-events: none;
-            z-index: 100;
-            opacity: 0.4;
+            pointer-events: none; z-index: 100; opacity: 0.4;
         }
 
         /* --- SCROLL-ACTIVATED NAV --- */
         nav {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 15px 20px;
-            background: rgba(0,0,0,0.9);
+            display: flex; flex-direction: column; align-items: center;
+            padding: 15px 20px; background: rgba(0,0,0,0.95);
             border-bottom: 2px solid var(--tt-red);
-            position: fixed;
-            top: -200px; /* Hidden initially */
-            width: 100%;
-            z-index: 1000;
-            backdrop-filter: blur(10px);
-            transition: top 0.5s ease-in-out;
+            position: fixed; top: -250px; width: 100%;
+            z-index: 1000; backdrop-filter: blur(10px);
+            transition: top 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
-
-        nav.active {
-            top: 0;
-        }
-
-        .logo-img {
-            height: 35px;
-            width: auto;
-            margin-bottom: 10px;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
+        nav.active { top: 0; }
+        .logo-img { height: 35px; width: auto; margin-bottom: 10px; }
+        .nav-links { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; }
         .nav-links a {
+            color: #fff; text-decoration: none; font-family: 'Teko', sans-serif;
+            font-size: 1.1rem; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s;
+        }
+        .nav-links a:hover { color: var(--tt-red); }
+
+        /* --- FLOATING CART TRIGGER --- */
+        .cart-trigger {
+            position: absolute;
+            right: 40px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 1001;
+            padding: 5px 10px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(0,0,0,0.5);
+        }
+        .cart-icon-svg { width: 22px; height: 22px; fill: #fff; }
+        .cart-count {
+            background: var(--tt-red);
             color: #fff;
-            text-decoration: none;
             font-family: 'Teko', sans-serif;
             font-size: 1.1rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: 0.3s;
+            padding: 0 6px;
+            border-radius: 2px;
         }
 
-        .nav-links a:hover {
-            color: var(--tt-red);
+        /* --- CART SIDEBAR --- */
+        .cart-sidebar {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 350px;
+            height: 100vh;
+            background: rgba(5, 5, 5, 0.98);
+            border-left: 2px solid var(--tt-red);
+            z-index: 2000;
+            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 40px 25px;
+            backdrop-filter: blur(15px);
+            display: flex;
+            flex-direction: column;
         }
+        .cart-sidebar.open { right: 0; }
+        .cart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+        }
+        .cart-header h3 { font-family: 'Teko', sans-serif; font-size: 2.2rem; color: #fff; letter-spacing: 2px; }
+        .close-cart { cursor: pointer; font-family: 'Teko', sans-serif; font-size: 1.2rem; color: var(--tt-red); }
+        .cart-content { flex-grow: 1; color: #888; overflow-y: auto; }
+
+        /* --- ADDED NOTIFICATION POPUP --- */
+        #cart-toast {
+            position: fixed; bottom: 30px; right: 30px;
+            background: var(--tt-red); color: white;
+            padding: 15px 30px; font-family: 'Teko', sans-serif;
+            font-size: 1.2rem; text-transform: uppercase;
+            letter-spacing: 2px; z-index: 3000;
+            clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%);
+            display: none; animation: slideUp 0.3s ease;
+        }
+        @keyframes slideUp { from { transform: translateY(100px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
         /* --- HERO SECTION --- */
         .hero {
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            position: relative;
+            height: 100vh; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; text-align: center; position: relative;
         }
-
-        .hero-content {
-            position: relative;
-            z-index: 10;
-        }
-
         .hero h1 {
-            font-family: 'Teko', sans-serif;
-            font-size: clamp(3.5rem, 12vw, 10rem);
-            line-height: 0.85;
-            margin-bottom: 20px;
-            text-transform: uppercase;
-            font-style: italic;
-            background: linear-gradient(to bottom, #fff 50%, #888 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 20px rgba(0,0,0,0.8));
+            font-family: 'Teko', sans-serif; font-size: clamp(3.5rem, 12vw, 10rem);
+            line-height: 0.85; margin-bottom: 20px; text-transform: uppercase;
+            font-style: italic; background: linear-gradient(to bottom, #fff 50%, #888 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
-
         .hero p {
-            font-size: clamp(12px, 2vw, 14px);
-            max-width: 650px;
-            margin: 0 auto 40px;
-            color: #ddd;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.8);
-            line-height: 1.5;
-            padding: 0 15px;
+            font-size: clamp(12px, 2vw, 14px); max-width: 650px; margin: 0 auto 40px;
+            color: #ddd; letter-spacing: 2px; text-transform: uppercase; line-height: 1.5;
         }
-
-        /* --- SHOP BUTTON --- */
         .shop-btn {
-            background: var(--tt-red);
-            color: #fff;
-            padding: clamp(15px, 3vw, 22px) clamp(40px, 8vw, 70px);
-            font-family: 'Teko', sans-serif;
-            font-size: clamp(1.5rem, 5vw, 2.2rem);
-            text-decoration: none;
-            font-weight: bold;
-            text-transform: uppercase;
-            clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%);
-            display: inline-block;
-            transition: 0.3s;
-            box-shadow: 0 0 30px rgba(204, 0, 0, 0.4);
+            background: var(--tt-red); color: #fff; padding: 22px 70px;
+            font-family: 'Teko', sans-serif; font-size: 2.2rem; text-decoration: none;
+            font-weight: bold; text-transform: uppercase; clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%);
+            display: inline-block; transition: 0.3s; cursor: pointer; border: none;
         }
+        .shop-btn:hover { background: #fff; color: var(--tt-red); }
 
-        .shop-btn:hover {
-            transform: scale(1.05) skewX(-5deg);
-            background: #fff;
-            color: var(--tt-red);
-            box-shadow: 0 0 50px rgba(255, 255, 255, 0.5);
+        /* --- SCROLL INDICATOR --- */
+        .scroll-indicator {
+            position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+            cursor: pointer; z-index: 10; display: flex; flex-direction: column; align-items: center; text-decoration: none;
         }
+        .scroll-indicator span { color: var(--tt-red); font-family: 'Teko', sans-serif; font-size: 0.8rem; letter-spacing: 3px; }
+        .arrow-v {
+            width: 30px; height: 15px; border-left: 3px solid var(--tt-red); border-bottom: 3px solid var(--tt-red);
+            transform: rotate(-45deg); animation: pulse-arrow 2s infinite;
+        }
+        @keyframes pulse-arrow { 0% { transform: rotate(-45deg) translate(0,0); opacity: 0.2;} 100% { transform: rotate(-45deg) translate(-10px,10px); opacity: 0;}}
+
+        /* --- PRODUCT SECTION --- */
+        .product-section {
+            min-height: 100vh; padding: 100px 10%;
+            display: flex; align-items: center; justify-content: space-between;
+            gap: 50px; background: rgba(5, 5, 5, 0.85); position: relative; z-index: 5;
+            backdrop-filter: blur(5px);
+        }
+        .reveal-right { opacity: 0; transform: translateX(60px); transition: 0.5s; }
+        .reveal-right.active { opacity: 1; transform: translateX(0); }
+        .product-text { flex: 1; }
+        .product-text h2 { font-family: 'Teko', sans-serif; font-size: 4rem; color: var(--tt-red); margin-bottom: 20px; text-transform: uppercase; }
+        .product-text p { font-size: 1.1rem; line-height: 1.8; color: #ccc; margin-bottom: 30px; letter-spacing: 1px; }
+        .product-image { flex: 1; text-align: center; }
+        .product-image img { max-width: 100%; filter: drop-shadow(0 0 20px rgba(204, 0, 0, 0.3)); }
+
+        /* --- CATEGORIES --- */
+        .shop-categories { padding: 100px 5%; background: rgba(0, 0, 0, 0.95); text-align: center; position: relative; z-index: 5; }
+        .shop-categories h2 { font-family: 'Teko', sans-serif; font-size: 3.5rem; letter-spacing: 4px; margin-bottom: 60px; color: #fff; }
+        .category-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 30px; max-width: 1300px; margin: 0 auto; }
+        .hud-card { background: #111; padding: 40px 20px; text-decoration: none; position: relative; display: flex; flex-direction: column; align-items: center; clip-path: polygon(0 15%, 15% 0, 100% 0, 100% 85%, 85% 100%, 0% 100%); border: 1px solid rgba(255, 255, 255, 0.05); transition: 0.3s; cursor: pointer; }
+        .hud-card:hover { border-color: var(--tt-red); background: #1a1a1a; }
+        .inner-box { background: #fff; width: 180px; height: 240px; padding: 15px; margin-bottom: 25px; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; overflow: hidden; }
+        .inner-box img { max-width: 100%; max-height: 70%; object-fit: contain; }
+        .inner-box .card-label { font-family: 'Teko', sans-serif; font-size: 1rem; color: var(--tt-red); margin-top: 15px; font-weight: 700; }
+        .hud-label { font-family: 'Teko', sans-serif; color: var(--tt-red); font-size: 2.2rem; text-transform: uppercase; }
+        .sale-badge { position: absolute; top: 10px; right: 10px; width: 45px; height: 45px; z-index: 2; }
 
         /* --- CORNERS --- */
-        .corner {
-            position: absolute;
-            width: 40px; height: 40px;
-            border: 2px solid var(--tt-red);
-            opacity: 0.7;
-        }
+        .corner { position: absolute; width: 40px; height: 40px; border: 2px solid var(--tt-red); opacity: 0.7; }
         .top-left { top: 120px; left: 50px; border-right: none; border-bottom: none; }
         .bottom-right { bottom: 50px; right: 50px; border-left: none; border-top: none; }
-
-        @media (max-width: 600px) {
-            .top-left { top: 40px; left: 20px; }
-            .bottom-right { bottom: 40px; right: 20px; }
-            .nav-links a { font-size: 0.9rem; gap: 10px; }
-        }
-
     </style>
 </head>
 <body>
@@ -203,44 +212,153 @@
             <source src="DiabloTrigger.mp4" type="video/mp4">
         </video>
     </div>
-    
     <div class="video-overlay"></div>
 
     <nav id="scroll-nav">
         <img src="texas.png" alt="Texas Trigger Logo" class="logo-img">
         <div class="nav-links">
-            <a href="#">Home</a>
-            <a href="#">Shop</a>
-            <a href="#">Installation Guide</a>
-            <a href="#">Kalash Bash</a>
-            <a href="#">Contact Us</a>
-            <a href="#">Careers</a>
+            <a href="#">Home</a><a href="#">Shop</a><a href="#">Installation Guide</a>
+            <a href="#">Kalash Bash</a><a href="#">Contact Us</a><a href="#">Careers</a>
+        </div>
+
+        <div class="cart-trigger" id="cart-btn">
+            <svg class="cart-icon-svg" viewBox="0 0 24 24"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg>
+            <span class="cart-count" id="count-display">0</span>
         </div>
     </nav>
+
+    <div id="cart-toast">SYSTEM ALERT: ITEM ADDED</div>
+
+    <div class="cart-sidebar" id="sidebar">
+        <div class="cart-header">
+            <h3>INVENTORY</h3>
+            <span class="close-cart" id="close-btn">✕ DISMISS</span>
+        </div>
+        <div class="cart-content" id="cart-items">
+            <p style="text-align: center; margin-top: 50px; opacity: 0.5;">EMPTY LOADOUT</p>
+        </div>
+        <button class="shop-btn" style="width: 100%; padding: 15px; font-size: 1.5rem;">INITIALIZE CHECKOUT</button>
+    </div>
 
     <section class="hero">
         <div class="corner top-left"></div>
         <div class="corner bottom-right"></div>
-
         <div class="hero-content">
-            <h3 style="letter-spacing: 10px; margin-bottom: 10px; opacity: 0.8; font-size: clamp(0.7rem, 2vw, 1rem);">SYSTEM STATUS: ACTIVE</h3>
+            <h3 style="letter-spacing: 10px; margin-bottom: 10px; opacity: 0.8;">SYSTEM STATUS: ACTIVE</h3>
             <h1>DIABLO<br>TRIGGER</h1>
             <p>Introducing the world’s first AK-47 forced reset trigger (FRT). Compatible with a variety of AK-47 models, including popular brands such as PSA, Century Arms, Zastava, and more. Experience unmatched quality, fast customer support, and a team that stands behind every Diablo Trigger.</p>
-            
-            <a href="#" class="shop-btn">SHOP NOW</a>
+            <button class="shop-btn" onclick="addItem('DIABLO TRIGGER')">SHOP NOW</button>
+        </div>
+        <a href="#product" class="scroll-indicator">
+            <span>DISCOVER</span>
+            <div class="arrow-v"></div>
+        </a>
+    </section>
+
+    <section id="product" class="product-section">
+        <div class="product-text">
+            <h2 class="reveal-right">FB BERYL FRT</h2>
+            <p class="reveal-right">Meet the FRT that changes the game for the FB Radom Beryl and Tantal platforms. No fitting, no headaches — this true drop-in trigger installs in minutes, allowing you to set it up right at the range and start shooting instantly. Our Diablo Trigger for AKs was a hit, but it was never compatible with the FB Radom Beryl or Tantal platforms. This is the first-ever patent-pending FRT explicitly designed for the Beryl and Tantal, and it’s even faster than our previous kit. As the first of its kind for these platforms, it delivers unmatched simplicity, reliability, and speed. Compatibility with the FB Radom Beryl – 5.56/.223, FB Radom Beryl – 7.62×39, Mini Beryl Pistol variants, and Tantal – 5.45×39.</p>
+            <button class="shop-btn reveal-right" onclick="addItem('FB BERYL FRT')">SHOP NOW</button>
+        </div>
+        <div class="product-image">
+            <img src="fire5.png" alt="FB BERYL FRT Photo" class="reveal-right glitch-img">
+        </div>
+    </section>
+
+    <section class="shop-categories">
+        <h2>SHOP OUR CATEGORIES</h2>
+        <div class="category-grid">
+            <div class="hud-card" onclick="addItem('FRT UNIT')">
+                <div class="inner-box">
+                    <img src="fire1.png" alt="FRT">
+                    <span class="card-label">FRT</span>
+                </div>
+                <div class="hud-label">FRT</div>
+            </div>
+            <div class="hud-card" onclick="addItem('AK MAGAZINE')">
+                <div class="inner-box">
+                    <img src="fire2.png" alt="Magazines">
+                    <span class="card-label">MAGAZINES</span>
+                </div>
+                <div class="hud-label">MAGAZINES</div>
+            </div>
+            <div class="hud-card" onclick="addItem('AK ACCESSORY')">
+                <div class="inner-box">
+                    <img src="fire3.png" alt="Accessories">
+                    <span class="card-label">ACCESSORIES</span>
+                </div>
+                <div class="hud-label">ACCESSORIES</div>
+            </div>
+            <div class="hud-card" onclick="addItem('ALL GEAR')">
+                <div class="inner-box">
+                    <img src="https://i.postimg.cc/q7SjGfXn/sale-badge.png" class="sale-badge" alt="Sale">
+                    <img src="fire4.png" alt="All Products">
+                    <span class="card-label">ALL PRODUCTS</span>
+                </div>
+                <div class="hud-label">ALL PRODUCTS</div>
+            </div>
         </div>
     </section>
 
     <script>
         const nav = document.getElementById('scroll-nav');
-        window.onscroll = function() {
-            if (window.pageYOffset > 100) {
-                nav.classList.add("active");
-            } else {
-                nav.classList.remove("active");
-            }
-        };
-    </script>
+        const sidebar = document.getElementById('sidebar');
+        const cartBtn = document.getElementById('cart-btn');
+        const closeBtn = document.getElementById('close-btn');
+        const countDisplay = document.getElementById('count-display');
+        const cartItemsList = document.getElementById('cart-items');
+        const toast = document.getElementById('cart-toast');
 
+        let cart = [];
+
+        // Manual Sidebar Logic
+        cartBtn.addEventListener('click', () => sidebar.classList.add('open'));
+        closeBtn.addEventListener('click', () => sidebar.classList.remove('open'));
+
+        window.onscroll = function() {
+            if (window.pageYOffset > 100) { nav.classList.add("active"); } 
+            else { nav.classList.remove("active"); }
+        };
+
+        // Add to Cart Logic
+        function addItem(name) {
+            cart.push(name);
+            countDisplay.innerText = cart.length;
+            updateUI();
+            
+            // Show HUD Alert
+            toast.style.display = 'block';
+            setTimeout(() => { toast.style.display = 'none'; }, 2000);
+        }
+
+        function updateUI() {
+            if (cart.length > 0) {
+                cartItemsList.innerHTML = cart.map((item, index) => `
+                    <div style="padding: 12px 0; border-bottom: 1px solid #222; color: #fff; display: flex; justify-content: space-between;">
+                        <span><span style="color:var(--tt-red)">></span> ${item}</span>
+                        <span style="font-size: 0.7rem; opacity: 0.4; cursor: pointer;" onclick="event.stopPropagation(); removeItem(${index})">REMOVE</span>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function removeItem(index) {
+            cart.splice(index, 1);
+            countDisplay.innerText = cart.length;
+            if (cart.length === 0) {
+                cartItemsList.innerHTML = '<p style="text-align: center; margin-top: 50px; opacity: 0.5;">EMPTY LOADOUT</p>';
+            } else {
+                updateUI();
+            }
+        }
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) entry.target.classList.add('active');
+            });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.reveal-right').forEach((el) => observer.observe(el));
+    </script>
 </body>
 </html>
